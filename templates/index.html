@@ -14,19 +14,91 @@
             padding: 8px;
             text-align: left;
         }
+        .button-container {
+            margin-top: 20px;
+        }
+        .copy-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .popup {
+            visibility: hidden;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            right: 20px;
+            bottom: 30px;
+            margin-right: 20px;
+        }
+        .show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
     </style>
 </head>
 <body>
-    <h1>Upload CSV File</h1>
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
-    </form>
+    <h1>Upload FLO CSV FILE</h1>
+    <div class="button-container">
+        <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" style="display: inline;">
+            <input type="file" name="file" id="file-input">
+        </form>
+        <button class="copy-button" onclick="copyTableData()" id="copy-button" style="display: none;">Copy All</button>
+    </div>
     {% if tables %}
         <h2>CSV Data (First 500 Rows)</h2>
         {% for table in tables %}
             {{ table|safe }}
         {% endfor %}
     {% endif %}
+    <div id="popup" class="popup">Data copied to clipboard</div>
+    <script>
+        document.getElementById('file-input').addEventListener('change', function() {
+            document.getElementById('upload-form').submit();
+        });
+
+        function copyTableData() {
+            var range = document.createRange();
+            range.selectNode(document.querySelector('.data'));
+            window.getSelection().removeAllRanges(); // clear current selection
+            window.getSelection().addRange(range); // to select text
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges(); // to deselect
+
+            // Show the popup
+            var popup = document.getElementById('popup');
+            popup.classList.add("show");
+            setTimeout(function() { popup.classList.remove("show"); }, 3000);
+        }
+
+        // Show copy button if data is available
+        {% if tables %}
+            document.getElementById('copy-button').style.display = 'inline-block';
+        {% endif %}
+    </script>
 </body>
 </html>

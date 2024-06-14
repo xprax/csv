@@ -5,11 +5,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('upload.html')
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-<<<<<<< HEAD
     if request.method == 'POST':
         file = request.files['file']
         if file and file.filename.endswith('.csv'):
@@ -31,34 +30,6 @@ def upload_file():
             data = df.head(500)
             return render_template('index.html', tables=[data.to_html(classes='data')], titles=data.columns.values)
     return redirect(url_for('index'))
-=======
-    if 'file' not in request.files:
-        return redirect(url_for('index'))
-    
-    file = request.files['file']
-    
-    if file.filename == '':
-        return redirect(url_for('index'))
-    
-    if file:
-        # Read the file into a DataFrame
-        df = pd.read_csv(file)
-        
-        # Reorder columns: move 'id' to be the first column
-        if 'id' in df.columns:
-            cols = ['id'] + [col for col in df.columns if col != 'id']
-            df = df[cols]
-        
-        # Remove 'numbers' column if it exists
-        if 'numbers' in df.columns:
-            df = df.drop(columns=['numbers'])
-        
-        # Convert DataFrame to HTML
-        tables = [df.head(500).to_html(classes='data', header=True, index=False)]
-        
-        # Render the template with the table
-        return render_template('data.html', tables=tables)
->>>>>>> 4f03da60319d9b81baa957012c4da79e1caa4c30
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,17 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Upload</title>
     <style>
-        .data {
-            width: 100%;
-            border-collapse: collapse;
+        .container {
+            margin: 20px auto;
+            max-width: 80%;
+            text-align: center;
         }
-        .data th, .data td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #28a745; /* Changed background color */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
-        .button-container {
-            margin-top: 20px;
+        .top-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745; /* Changed background color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .button-link:hover {
+            background-color: #218838; /* Changed hover color */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .filter-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .filter {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .filter-label {
+            font-size: 1.2em;
+            margin-right: 10px;
+            color: #555;
+        }
+        .form-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .input-button {
+            display: flex;
+            align-items: center;
+        }
+        .file-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        textarea {
+            height: 1in;
+            resize: none;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #28a745; /* Changed background color */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #218838; /* Changed hover color */
+        }
+        .load-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .load-button:hover {
+            background-color: #218838;
         }
         .copy-button {
             padding: 10px 20px;
@@ -24,6 +127,75 @@
             border: none;
             cursor: pointer;
             margin-left: 10px;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            overflow: auto;
+            max-height: 70vh;
+            border: 1px solid #ddd;
+        }
+        .data {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+        .data th, .data td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        .data td.selected {
+            background-color: #B0E0E6;
+        }
+        .rto {
+            background-color: #ffcccc;
+        }
+        .exempted {
+            background-color: #ccffcc;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .switch input {
+            display: none;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(14px);
         }
         .popup {
             visibility: hidden;
@@ -44,55 +216,64 @@
             animation: fadein 0.5s, fadeout 0.5s 2.5s;
         }
         @-webkit-keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
         }
         @keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
         }
         @-webkit-keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
         }
         @keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <h1>Upload FLO CSV FILE</h1>
-    <div class="button-container">
-        <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" style="display: inline;">
-            <input type="file" name="file" id="file-input">
-        </form>
-        <button class="copy-button" onclick="copyTableData()" id="copy-button" style="display: none;">Copy All</button>
+    <div class="container">
+        <h1 class="title">Upload FLO CSV FILE</h1>
+        <div class="top-section">
+            <form id="upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" style="display: inline;">
+                <input type="file" name="file" id="file-input" class="file-input">
+            </form>
+            <button class="copy-button" onclick="copyTableData()" id="copy-button" style="display: none;">Copy All</button>
+        </div>
+        {% if tables %}
+            <h2>CSV Data (First 500 Rows)</h2>
+            <div class="table-container">
+                {% for table in tables %}
+                    {{ table|safe }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div id="popup" class="popup">Data copied to clipboard</div>
     </div>
-    {% if tables %}
-        <h2>CSV Data (First 500 Rows)</h2>
-        {% for table in tables %}
-            {{ table|safe }}
-        {% endfor %}
-    {% endif %}
-    <div id="popup" class="popup">Data copied to clipboard</div>
     <script>
         document.getElementById('file-input').addEventListener('change', function() {
             document.getElementById('upload-form').submit();
         });
 
         function copyTableData() {
-            var range = document.createRange();
-            range.selectNode(document.querySelector('.data'));
-            window.getSelection().removeAllRanges(); // clear current selection
-            window.getSelection().addRange(range); // to select text
-            document.execCommand("copy");
-            window.getSelection().removeAllRanges(); // to deselect
+            var table = document.querySelector('.data tbody');
+            var htmlContent = table.outerHTML;
 
-            // Show the popup
-            var popup = document.getElementById('popup');
-            popup.classList.add("show");
-            setTimeout(function() { popup.classList.remove("show"); }, 3000);
+            navigator.clipboard.writeText(htmlContent).then(function() {
+                // Show the popup
+                var popup = document.getElementById('popup');
+                popup.classList.add("show");
+                setTimeout(function() { popup.classList.remove("show"); }, 3000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+            });
+
+            // Show copy button if data is available
+            {% if tables %}
+                document.getElementById('copy-button').style.display = 'inline-block';
+            {% endif %}
         }
 
         // Show copy button if data is available

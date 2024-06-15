@@ -14,7 +14,7 @@
             font-size: 2.5em;
             font-weight: bold;
             color: #ffffff;
-            background-color: #28a745; /* Changed background color */
+            background-color: #28a745;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -29,7 +29,7 @@
         .button-link {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #28a745; /* Changed background color */
+            background-color: #28a745;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -38,7 +38,7 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
         .button-link:hover {
-            background-color: #218838; /* Changed hover color */
+            background-color: #218838;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
         .filter-box {
@@ -98,7 +98,7 @@
         button {
             margin-left: 10px;
             padding: 10px 20px;
-            background-color: #28a745; /* Changed background color */
+            background-color: #28a745;
             color: white;
             border: none;
             cursor: pointer;
@@ -106,7 +106,7 @@
             font-size: 1em;
         }
         button:hover {
-            background-color: #218838; /* Changed hover color */
+            background-color: #218838;
         }
         .load-button {
             padding: 10px 20px;
@@ -258,25 +258,44 @@
         });
 
         function copyTableData() {
-            var table = document.querySelector('.data tbody');
-            var htmlContent = table.outerHTML;
+            var table = document.querySelector('.data');
+            var rows = table.querySelectorAll('tbody tr');
+            var tempDiv = document.createElement('div');
+            var tableHTML = '<table class="data">' + table.tBodies[0].outerHTML + '</table>';
+            
+            tempDiv.innerHTML = tableHTML;
 
-            navigator.clipboard.writeText(htmlContent).then(function() {
-                // Show the popup
-                var popup = document.getElementById('popup');
-                popup.classList.add("show");
-                setTimeout(function() { popup.classList.remove("show"); }, 3000);
-            }).catch(function(err) {
-                console.error('Failed to copy: ', err);
+            // Remove headers and row numbers if present
+            tempDiv.querySelector('thead')?.remove();
+            tempDiv.querySelectorAll('tr').forEach(function(row) {
+                row.cells[0]?.remove();
             });
 
-            // Show copy button if data is available
-            {% if tables %}
-                document.getElementById('copy-button').style.display = 'inline-block';
-            {% endif %}
+            document.body.appendChild(tempDiv);
+
+            var range = document.createRange();
+            range.selectNode(tempDiv);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            try {
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    var popup = document.getElementById('popup');
+                    popup.classList.add("show");
+                    setTimeout(function() { popup.classList.remove("show"); }, 3000);
+                } else {
+                    console.log('Failed to copy');
+                }
+            } catch (err) {
+                console.log('Error copying text: ', err);
+            }
+
+            selection.removeAllRanges();
+            document.body.removeChild(tempDiv);
         }
 
-        // Show copy button if data is available
         {% if tables %}
             document.getElementById('copy-button').style.display = 'inline-block';
         {% endif %}

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <title>Upload CSV</title>
 </head>
 <body>
@@ -12,6 +13,53 @@
         <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="file">Choose CSV file</label>
+=======
+    <title>Upload FLO CSV File</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            display: inline-block;
+            width: auto;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Upload FLO CSV File</h1>
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+>>>>>>> 4f03da60319d9b81baa957012c4da79e1caa4c30
 =======
     <title>Upload FLO CSV File</title>
     <style>
